@@ -42,11 +42,13 @@ func startProcess(srcFile *os.File, destFile *os.File, hdr string, ftr string, p
  * writes the line to the output file and moves to the next line.
  */
 func findProtected(protectedList []string) {
-	for _, protected := range protectedList {
-		if len(lines[ndx]) > 0 && strings.HasPrefix(lines[ndx], protected) {
-			writeLine(lines[ndx])
-			ndx++
-			break
+	if ndx < len(lines) {
+		for _, protected := range protectedList {
+			if len(lines[ndx]) > 0 && strings.HasPrefix(lines[ndx], protected) {
+				writeLine(lines[ndx])
+				ndx++
+				break
+			}
 		}
 	}
 }
@@ -145,7 +147,7 @@ func isCommentFooter(index int, line string) bool {
 	if strings.HasSuffix(line, footer) {
 		ret = true
 		if strings.EqualFold(footer, prefix) {
-			if index < len(lines) {
+			if index < len(lines)-1 {
 				ret = !strings.HasPrefix(lines[index+1], prefix)
 			}
 		}
