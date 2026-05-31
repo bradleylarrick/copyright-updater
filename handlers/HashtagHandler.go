@@ -15,6 +15,9 @@ func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *[]string) e
 	if err != nil {
 		return err
 	}
+
+	findProtected([]string{"#!"})
+	findHeader()
 	writeCopyright(copyright)
 	return endProcess()
 }

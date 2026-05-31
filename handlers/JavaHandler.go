@@ -15,6 +15,8 @@ func (JavaHandler) Format(src *os.File, dest *os.File, copyright *[]string) erro
 	if err != nil {
 		return err
 	}
+
+	findHeader()
 	writeCopyright(copyright)
 	return endProcess()
 }

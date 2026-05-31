@@ -15,6 +15,9 @@ func (XmlHandler) Format(src *os.File, dest *os.File, copyright *[]string) error
 	if err != nil {
 		return err
 	}
+
+	findProtected([]string{"<?xml version", "<!DOCTYPE"})
+	findHeader()
 	writeCopyright(copyright)
 	return endProcess()
 }

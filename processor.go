@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	handlers "natuna.org/copyright/handlers"
 )
@@ -39,7 +41,10 @@ func NewProcessor() *Processor {
 	}
 }
 
-// Processes the given file
+/* Processes the given file.
+ *
+ * Returns an error if the file could not be processed.
+ */
 func (p Processor) ProcessFile(path string, name string) error {
 
 	var destPath string
@@ -56,7 +61,6 @@ func (p Processor) ProcessFile(path string, name string) error {
 
 	fullSrc := filepath.Join(path, name)
 	fullDest := filepath.Join(destPath, name)
-	ext := filepath.Ext(name)
 	exclude := IsExcluded(fullSrc)
 	if exclude {
 		if isVerbose {
@@ -65,8 +69,12 @@ func (p Processor) ProcessFile(path string, name string) error {
 		return nil
 	}
 
-	// fmt.Printf("srcDir = %s, fullSrc = %s\n", srcDir, fullSrc)
-	// fmt.Printf("base = %s\n", filepath.Base(fullSrc))
+	ext := filepath.Ext(name)
+	// If the file has no extension and is a script file, use ".sh" as the extension.
+	if len(ext) == 0 && isScriptFile(fullSrc) {
+		ext = ".sh"
+	}
+
 	handler, ok := p.handlers[ext]
 	if !ok {
 		return nil
@@ -118,4 +126,26 @@ func validateDestPath(destPath string) error {
 	}
 
 	return nil
+}
+
+/*
+ * Checks if the file is a script file based on the first line starting with "#!".
+ */
+func isScriptFile(fullSrc string) bool {
+	srcFile, err := os.Open(fullSrc)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to open file: %v\n", err)
+		os.Exit(4)
+	}
+	defer srcFile.Close()
+
+	scanner := bufio.NewScanner(srcFile)
+	if scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "#!") {
+			return true
+		}
+	}
+
+	return false
 }
