@@ -36,6 +36,7 @@ func NewProcessor() *Processor {
 	return &Processor{
 		handlers: map[string]FileHandler{
 			".bash":   handlers.HashtagHandler{},
+			".bat":    handlers.BatHandler{},
 			".cs":     handlers.JavaHandler{},
 			".css":    handlers.JavaHandler{},
 			".csv":    handlers.HashtagHandler{},
