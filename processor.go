@@ -91,12 +91,15 @@ func (p Processor) ProcessFile(path string, name string) error {
 
 	ext := filepath.Ext(name)
 	// If the file has no extension and is a script file, use ".sh" as the extension.
-	if len(ext) == 0 {
-		if isScriptFile(fullSrc) || strings.EqualFold(name, "makefile") {
-			ext = ".sh"
-		} else if strings.EqualFold(name, "jenkinsfile") {
-			ext = ".java"
-		}
+	if len(ext) == 0 && isScriptFile(fullSrc) {
+		ext = ".sh"
+	}
+
+	// If the file is a Makefile or Jenkinsfile, use the appropriate extension.
+	if strings.HasPrefix(strings.ToLower(name), "makefile") {
+		ext = ".sh"
+	} else if strings.HasPrefix(strings.ToLower(name), "jenkinsfile") {
+		ext = ".java"
 	}
 
 	handler, ok := p.handlers[ext]
