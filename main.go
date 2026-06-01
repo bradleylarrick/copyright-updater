@@ -36,6 +36,14 @@ var (
 	copyright       *Copyright
 )
 
+/*
+ * The Usage function prints the command line usage message.
+ */
+var Usage = func() {
+	fmt.Fprintln(flag.CommandLine.Output(), "usage: copyright [options] <source directory> ...")
+	flag.PrintDefaults()
+}
+
 func main() {
 	ret, ok := processCommandLine(os.Args[1:])
 	if !ok {
@@ -127,41 +135,6 @@ func IsExcluded(path string) bool {
 	return false
 }
 
-// processCommandLine processes the command line arguments and returns the
-// true and the matcher string when successful.  It returns false if the
-// -help option was specified, or if no matcher string specified
-func processCommandLine(cmdLine []string) (int, bool) {
-	helpFlag := flag.Bool("help", false, "print this message and exit")
-	verboseFlag := flag.Bool("v", false, "set verbose logging")
-	previewFlag := flag.Bool("p", false, "only list files that will be updated")
-	destArg := flag.String("d", "", "destination directory (defaults to source)")
-	templateArg := flag.String("t", ".copyright.txt", "a copyright template file (defaults to .copyright.txt)")
-	excludedList := flag.String("e", "", "a list of directory patterns to exclude")
-
-	flag.CommandLine.Parse(cmdLine)
-
-	if *helpFlag {
-		printUsage(os.Stdout)
-		return 0, false
-	}
-
-	isVerbose = *verboseFlag
-	isPreview = *previewFlag
-	destDir = *destArg
-	template = *templateArg
-	populateExclusions(*excludedList)
-
-	args := flag.Args()
-	// at least 1 argument expected
-	if len(args) < 1 {
-		printUsage(os.Stderr)
-		return 1, false
-	}
-
-	sourceDirs = args[0:]
-	return 0, true
-}
-
 // Parses the excluded list argument and populates the excludePatterns slice.
 func populateExclusions(excludedList string) {
 	if len(excludedList) > 0 {
@@ -176,15 +149,41 @@ func populateExclusions(excludedList string) {
 	}
 }
 
-// printUsage prints the usage message for the program
-func printUsage(stream *os.File) {
-	fmt.Fprintln(stream, "usage: copyright [options] <source> ...")
-	fmt.Fprintln(stream, "  -d string")
-	fmt.Fprintln(stream, "\tdestination directory (defaults to overwrite")
-	fmt.Fprintln(stream, "  -help")
-	fmt.Fprintln(stream, "\tprint this message and exit")
-	fmt.Fprintln(stream, "  -p\tonly list files that will be updated")
-	fmt.Fprintln(stream, "  -t string")
-	fmt.Fprintln(stream, "\ta copyright template file")
-	fmt.Fprintln(stream, "  -v\tset verbose logging")
+/*
+ *  Processes the command line arguments and returns a flag
+ * indicating success and a exit value to use of not.
+ */
+func processCommandLine(cmdLine []string) (int, bool) {
+	flag.NewFlagSet("copyright", flag.ExitOnError)
+	flag.Usage = Usage
+	helpFlag := flag.Bool("h", false, "print this message and exit")
+	verboseFlag := flag.Bool("v", false, "set verbose logging")
+	previewFlag := flag.Bool("p", false, "only list files that will be updated")
+	destArg := flag.String("d", "", "destination `directory` (defaults to source)")
+	templateArg := flag.String("t", ".copyright.txt", "a copyright `template` file")
+	excludedList := flag.String("e", "", "a list of directory `patterns` to exclude")
+
+	flag.CommandLine.Parse(cmdLine)
+
+	if *helpFlag {
+		Usage()
+		return 0, false // stop processing, but no error
+	}
+
+	isVerbose = *verboseFlag
+	isPreview = *previewFlag
+	destDir = *destArg
+	template = *templateArg
+	populateExclusions(*excludedList)
+
+	args := flag.Args()
+	// at least 1 argument expected
+	if len(args) < 1 {
+		fmt.Fprintln(os.Stderr, "expected at least 1 source directory")
+		Usage()
+		return 1, false // stop processing and exit with error value 1
+	}
+
+	sourceDirs = args[0:]
+	return 0, true // all's good
 }
