@@ -55,6 +55,7 @@ func NewProcessor() *Processor {
 			".xmi":    handlers.XmlHandler{},
 			".xml":    handlers.XmlHandler{},
 			".xsd":    handlers.XmlHandler{},
+			".yaml":   handlers.HashtagHandler{},
 		},
 	}
 }
