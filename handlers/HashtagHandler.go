@@ -21,6 +21,7 @@ var (
 	hashHeader = "#"
 	hashFooter = "#"
 	hashPrefix = "#"
+	hashProtected = []string{"#!"}
 )
 
 func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
@@ -29,7 +30,9 @@ func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *[]string) e
 		return err
 	}
 
-	findProtected([]string{"#!"})
+	if len(hashProtected) > 0 {
+		findProtected(hashProtected)
+	}
 	findHeader()
 	writeCopyright(copyright)
 	return endProcess()

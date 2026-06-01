@@ -15,23 +15,23 @@ package handlers
 
 import "os"
 
-type XmlHandler struct{}
+type AptHandler struct{}
 
 var (
-	xmlHeader = "<!--"
-	xmlFooter = " -->"
-	xmlPrefix = " "
-	xmlProtected = []string{"<?xml version", "<!DOCTYPE"}
+	aptHeader = "~~"
+	aptFooter = "~~"
+	aptPrefix = "~~"
+	aptProtected = []string{}
 )
 
-func (XmlHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
-	err := startProcess(src, dest, xmlHeader, xmlFooter, xmlPrefix)
+func (AptHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
+	err := startProcess(src, dest, aptHeader, aptFooter, aptPrefix)
 	if err != nil {
 		return err
 	}
 
-	if len(xmlProtected) > 0 {
-		findProtected(xmlProtected)
+	if len(aptProtected) > 0 {
+		findProtected(aptProtected)
 	}
 	findHeader()
 	writeCopyright(copyright)

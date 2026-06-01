@@ -21,6 +21,7 @@ var (
 	batHeader = "REM"
 	batFooter = "REM"
 	batPrefix = "REM"
+	batProtected = []string{"@echo"}
 )
 
 func (BatHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
@@ -29,7 +30,9 @@ func (BatHandler) Format(src *os.File, dest *os.File, copyright *[]string) error
 		return err
 	}
 
-	findProtected([]string{"@echo"})
+	if len(batProtected) > 0 {
+		findProtected(batProtected)
+	}
 	findHeader()
 	writeCopyright(copyright)
 	return endProcess()

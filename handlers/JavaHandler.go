@@ -21,6 +21,7 @@ var (
 	javaHeader = "/*"
 	javaFooter = " */"
 	javaPrefix = " *"
+	javaProtected = []string{}
 )
 
 func (JavaHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
@@ -29,6 +30,9 @@ func (JavaHandler) Format(src *os.File, dest *os.File, copyright *[]string) erro
 		return err
 	}
 
+	if len(javaProtected) > 0 {
+		findProtected(javaProtected)
+	}
 	findHeader()
 	writeCopyright(copyright)
 	return endProcess()
