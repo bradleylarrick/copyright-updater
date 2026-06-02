@@ -162,7 +162,6 @@ func writeLine(line string) {
 func findPreviousYear(line string) {
 	re := regexp.MustCompile(`\b(\d{4})?-?(\d{4})\b`)
 	matches := re.FindStringSubmatch(line)
-	fmt.Printf("line = %s, matches = %v\n", line, matches)
 	if len(matches) > 0 {
 		if matches[1] != "" {
 			previous = matches[1]
