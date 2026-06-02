@@ -18,13 +18,13 @@ import "os"
 type HashtagHandler struct{}
 
 var (
-	hashHeader = "#"
-	hashFooter = "#"
-	hashPrefix = "#"
+	hashHeader    = "#"
+	hashFooter    = "#"
+	hashPrefix    = "#"
 	hashProtected = []string{"#!"}
 )
 
-func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
+func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
 	err := startProcess(src, dest, hashHeader, hashFooter, hashPrefix)
 	if err != nil {
 		return err

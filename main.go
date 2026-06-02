@@ -18,10 +18,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
-	"time"
 
 	"github.com/bmatcuk/doublestar/v4"
+	handlers "natuna.org/copyright/handlers"
 )
 
 var (
@@ -33,7 +34,7 @@ var (
 	srcDir          string
 	destDir         string
 	processor       *Processor
-	copyright       *Copyright
+	copyright       *handlers.Copyright
 )
 
 /*
@@ -50,13 +51,31 @@ func main() {
 		os.Exit(ret)
 	}
 
+	displayMemory()
 	processor = NewProcessor()
-	year := time.Now().Format("2006")
-	copyright = NewCopyright(template, year)
-	// for _, line := range copyright.copyright {
-	// 	fmt.Println(line)
-	// }
+	configure()
 	searchDirectories()
+	displayMemory()
+}
+
+/*
+ * Load the configuration file and set up the copyright template.
+ */
+func configure() {
+	err := loadConfigurationFile()
+	if err != nil {
+		os.Exit(1)
+	}
+
+	copyright = handlers.NewCopyright(template, Config.Copyright, isVerbose)
+	for _, line := range copyright.GetCopyright(copyright, "") {
+		fmt.Println(line)
+	}
+
+	if copyright.Copyright == nil {
+		fmt.Fprintln(os.Stderr, "No copyright template found.")
+		os.Exit(1)
+	}
 }
 
 // Process the given source directories for files to process.
@@ -160,7 +179,7 @@ func processCommandLine(cmdLine []string) (int, bool) {
 	verboseFlag := flag.Bool("v", false, "set verbose logging")
 	previewFlag := flag.Bool("p", false, "only list files that will be updated")
 	destArg := flag.String("d", "", "destination `directory` (defaults to source)")
-	templateArg := flag.String("t", ".copyright.txt", "a copyright `template` file")
+	templateArg := flag.String("t", "", "a copyright `template` file (default: .copyright.txt)")
 	excludedList := flag.String("e", "", "a list of directory `patterns` to exclude")
 
 	flag.CommandLine.Parse(cmdLine)
@@ -186,4 +205,17 @@ func processCommandLine(cmdLine []string) (int, bool) {
 
 	sourceDirs = args[0:]
 	return 0, true // all's good
+}
+
+/*
+ * displays memory usage statistics.
+ */
+func displayMemory() {
+	if isVerbose {
+		var m runtime.MemStats
+		runtime.ReadMemStats(&m)
+		fmt.Printf("Alloc = %v kB\n", m.Alloc/1024)
+		fmt.Printf("TotalAlloc = %v kB\n", m.TotalAlloc/1024)
+		fmt.Printf("System = %v kB\n", m.Sys/1024)
+	}
 }

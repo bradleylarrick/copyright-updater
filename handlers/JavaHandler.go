@@ -18,13 +18,13 @@ import "os"
 type JavaHandler struct{}
 
 var (
-	javaHeader = "/*"
-	javaFooter = " */"
-	javaPrefix = " *"
+	javaHeader    = "/*"
+	javaFooter    = " */"
+	javaPrefix    = " *"
 	javaProtected = []string{}
 )
 
-func (JavaHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
+func (JavaHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
 	err := startProcess(src, dest, javaHeader, javaFooter, javaPrefix)
 	if err != nil {
 		return err

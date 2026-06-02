@@ -18,13 +18,13 @@ import "os"
 type BatHandler struct{}
 
 var (
-	batHeader = "REM"
-	batFooter = "REM"
-	batPrefix = "REM"
+	batHeader    = "REM"
+	batFooter    = "REM"
+	batPrefix    = "REM"
 	batProtected = []string{"@echo"}
 )
 
-func (BatHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
+func (BatHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
 	err := startProcess(src, dest, batHeader, batFooter, batPrefix)
 	if err != nil {
 		return err

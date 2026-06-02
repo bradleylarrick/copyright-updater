@@ -18,13 +18,13 @@ import "os"
 type AptHandler struct{}
 
 var (
-	aptHeader = "~~"
-	aptFooter = "~~"
-	aptPrefix = "~~"
+	aptHeader    = "~~"
+	aptFooter    = "~~"
+	aptPrefix    = "~~"
 	aptProtected = []string{}
 )
 
-func (AptHandler) Format(src *os.File, dest *os.File, copyright *[]string) error {
+func (AptHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
 	err := startProcess(src, dest, aptHeader, aptFooter, aptPrefix)
 	if err != nil {
 		return err

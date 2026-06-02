@@ -17,17 +17,19 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
 var (
-	scanner *bufio.Scanner
-	writer  *bufio.Writer
-	header  string
-	footer  string
-	prefix  string
-	lines   []string
-	ndx     int
+	scanner  *bufio.Scanner
+	writer   *bufio.Writer
+	header   string
+	footer   string
+	prefix   string
+	lines    []string
+	previous string
+	ndx      int
 )
 
 /*
@@ -37,6 +39,7 @@ func startProcess(srcFile *os.File, destFile *os.File, hdr string, ftr string, p
 	header = hdr
 	footer = ftr
 	prefix = pref
+	previous = ""
 	ndx = 0
 	lines = lines[:ndx] // clear the lines slice
 
@@ -93,6 +96,7 @@ func findHeader() {
 		} else if strings.HasPrefix(line, prefix) {
 			if strings.Contains(strings.ToLower(line), "copyright") {
 				hasCopyright = true
+				findPreviousYear(line)
 			}
 		}
 	}
@@ -105,9 +109,10 @@ func findHeader() {
 /*
  * Writes the copyright header to the output file.
  */
-func writeCopyright(copyright *[]string) error {
+func writeCopyright(copyright *Copyright) error {
+	text := copyright.GetCopyright(copyright, previous)
 	writeLine(header)
-	for _, line := range *copyright {
+	for _, line := range text {
 		trimmed := strings.TrimRight(prefix+" "+line, " \t\n")
 		writeLine(trimmed)
 	}
@@ -148,6 +153,22 @@ func writeLine(line string) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error writing line: %s\n", err)
 		os.Exit(4)
+	}
+}
+
+/*
+ * Finds the previous year in the given line and stores it in the previous variable.
+ */
+func findPreviousYear(line string) {
+	re := regexp.MustCompile(`\b(\d{4})?-?(\d{4})\b`)
+	matches := re.FindStringSubmatch(line)
+	fmt.Printf("line = %s, matches = %v\n", line, matches)
+	if len(matches) > 0 {
+		if matches[1] != "" {
+			previous = matches[1]
+		} else {
+			previous = matches[2]
+		}
 	}
 }
 

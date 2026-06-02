@@ -24,7 +24,7 @@ import (
 )
 
 type FileHandler interface {
-	Format(src *os.File, dest *os.File, copyright *[]string) error
+	Format(src *os.File, dest *os.File, copyright *handlers.Copyright) error
 }
 
 type Processor struct {
@@ -61,7 +61,8 @@ func NewProcessor() *Processor {
 	}
 }
 
-/* Processes the given file.
+/*
+ * Processes the given file.
  *
  * Returns an error if the file could not be processed.
  */
@@ -123,7 +124,7 @@ func (p Processor) ProcessFile(path string, name string) error {
 			return err
 		}
 
-		err = handler.Format(srcFile, tempFile, &copyright.copyright)
+		err = handler.Format(srcFile, tempFile, copyright)
 		srcFile.Close()
 		tempFile.Close()
 		if err == nil {
