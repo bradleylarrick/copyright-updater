@@ -37,3 +37,10 @@ func (XmlHandler) Format(src *os.File, dest *os.File) error {
 	writeCopyright()
 	return endProcess()
 }
+
+/*
+ * Load additional protected patterns.
+ */
+func (XmlHandler) AddProtected(protected []string) {
+	addProtected(&xmlProtected, protected)
+}

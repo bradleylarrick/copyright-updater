@@ -75,6 +75,10 @@ func configure() {
 		for _, line := range template {
 			fmt.Println(line)
 		}
+		fmt.Println("Handlers:")
+		// for _, handler := range processor.Handlers {
+		fmt.Println(processor.Handlers)
+		// }
 	}
 }
 

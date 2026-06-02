@@ -37,3 +37,10 @@ func (JavaHandler) Format(src *os.File, dest *os.File) error {
 	writeCopyright()
 	return endProcess()
 }
+
+/*
+ * Load additional protected patterns.
+ */
+func (JavaHandler) AddProtected(protected []string) {
+	addProtected(&javaProtected, protected)
+}

@@ -25,16 +25,17 @@ import (
 
 type FileHandler interface {
 	Format(src *os.File, dest *os.File) error
+	AddProtected([]string)
 }
 
 type Processor struct {
-	handlers map[string]FileHandler
+	Handlers map[string]FileHandler
 }
 
 // Returns a Processor with the handler map populated.
 func NewProcessor() *Processor {
 	return &Processor{
-		handlers: map[string]FileHandler{
+		Handlers: map[string]FileHandler{
 			".bash":       handlers.HashtagHandler{},
 			".bat":        handlers.BatHandler{},
 			".cs":         handlers.JavaHandler{},
@@ -103,7 +104,7 @@ func (p Processor) ProcessFile(path string, name string) error {
 		ext = ".java"
 	}
 
-	handler, ok := p.handlers[ext]
+	handler, ok := p.Handlers[ext]
 	if !ok {
 		return nil
 	} else if isPreview {

@@ -157,6 +157,16 @@ func writeLine(line string) {
 }
 
 /*
+ * Load additional protected patterns.
+ */
+func addProtected(protected *[]string, new []string) {
+	for _, pro := range new {
+		*protected = append(*protected, pro)
+	}
+	// fmt.Printf("New Protected: %s\n", *protected)
+}
+
+/*
  * Finds the previous year in the given line and stores it in the previous variable.
  */
 func findPreviousYear(line string) {

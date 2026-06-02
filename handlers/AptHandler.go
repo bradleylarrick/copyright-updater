@@ -13,7 +13,10 @@
 
 package handlers
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type AptHandler struct{}
 
@@ -33,7 +36,32 @@ func (AptHandler) Format(src *os.File, dest *os.File) error {
 	if len(aptProtected) > 0 {
 		findProtected(aptProtected)
 	}
+
+	skipAptHeader()
 	findHeader()
 	writeCopyright()
 	return endProcess()
+}
+
+/*
+ * Load additional protected patterns.
+ */
+func (AptHandler) AddProtected(protected []string) {
+	addProtected(&aptProtected, protected)
+}
+
+/*
+ * APT files can have a custom header that needs to be skipped. We look for the first blank line
+ * or comment line and keep everything above it.
+ */
+func skipAptHeader() {
+	for i := ndx; i < len(lines); i++ {
+		line := lines[i]
+		if isBlank(line) || strings.HasPrefix(line, aptHeader) {
+			ndx = i
+			break
+		} else {
+			writeLine(line)
+		}
+	}
 }

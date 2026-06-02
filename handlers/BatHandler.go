@@ -37,3 +37,10 @@ func (BatHandler) Format(src *os.File, dest *os.File) error {
 	writeCopyright()
 	return endProcess()
 }
+
+/*
+ * Load additional protected patterns.
+ */
+func (BatHandler) AddProtected(protected []string) {
+	addProtected(&batProtected, protected)
+}

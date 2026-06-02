@@ -37,3 +37,10 @@ func (HashtagHandler) Format(src *os.File, dest *os.File) error {
 	writeCopyright()
 	return endProcess()
 }
+
+/*
+ * Load additional protected patterns.
+ */
+func (HashtagHandler) AddProtected(protected []string) {
+	addProtected(&hashProtected, protected)
+}
