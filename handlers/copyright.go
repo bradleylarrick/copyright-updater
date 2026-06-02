@@ -22,27 +22,17 @@ import (
 )
 
 var (
+	Template            []string
 	defaultTemplateFile = ".copyright.txt"
 	currentYear         = time.Now().Format("2006")
 )
-
-type Copyright struct {
-	Copyright []string
-}
-
-/*
- * Returns a new Copyright instance with the derived template.
- */
-func NewCopyright(templateFile string, defaultTemplate []string, isVerbose bool) *Copyright {
-	return &Copyright{Copyright: loadTemplate(templateFile, defaultTemplate, isVerbose)}
-}
 
 /*
  * Returns the copyright text as a slice of strings. If no previous copyright string is provided,
  * the ${year} placeholder is replaced with the current year. If a previous copyright string is provided,
  * the ${year} placeholder is replaced with '<previous>-<current year>'.
  */
-func (Copyright) GetCopyright(copyright *Copyright, previous string) []string {
+func GetCopyright(previous string) []string {
 	var newYear string
 	if previous != "" && !strings.EqualFold(previous, currentYear) {
 		newYear = previous + "-" + currentYear
@@ -50,7 +40,7 @@ func (Copyright) GetCopyright(copyright *Copyright, previous string) []string {
 		newYear = currentYear
 	}
 	var returnVal []string
-	for _, line := range copyright.Copyright {
+	for _, line := range Template {
 		returnVal = append(returnVal, strings.ReplaceAll(line, "${year}", newYear))
 	}
 	return returnVal
@@ -60,10 +50,7 @@ func (Copyright) GetCopyright(copyright *Copyright, previous string) []string {
  * Attempts to load the given copyright template. if no template is provided, the default template is used.
  * If the default template is not available, it uses the template from the global configuration file.
  */
-func loadTemplate(templateFile string, defaultTemplate []string, isVerbose bool) []string {
-
-	var copyright []string
-
+func LoadTemplate(templateFile string, defaultTemplate []string, isVerbose bool) []string {
 	var file *os.File
 	var err error
 	// If a template file argument provided, fail if the file cannot be opened.
@@ -81,7 +68,7 @@ func loadTemplate(templateFile string, defaultTemplate []string, isVerbose bool)
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			line := scanner.Text()
-			copyright = append(copyright, line)
+			Template = append(Template, line)
 
 			if scanner.Err() != nil {
 				fmt.Fprintf(os.Stderr, "Failed: %s\n", scanner.Err().Error())
@@ -92,10 +79,10 @@ func loadTemplate(templateFile string, defaultTemplate []string, isVerbose bool)
 		if isVerbose {
 			fmt.Println("Loading copyright from global config...")
 		}
-		copyright = defaultTemplate
+		Template = defaultTemplate
 	}
 
-	return copyright
+	return Template
 }
 
 /*

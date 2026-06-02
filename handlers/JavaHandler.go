@@ -24,7 +24,7 @@ var (
 	javaProtected = []string{}
 )
 
-func (JavaHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
+func (JavaHandler) Format(src *os.File, dest *os.File) error {
 	err := startProcess(src, dest, javaHeader, javaFooter, javaPrefix)
 	if err != nil {
 		return err
@@ -34,6 +34,6 @@ func (JavaHandler) Format(src *os.File, dest *os.File, copyright *Copyright) err
 		findProtected(javaProtected)
 	}
 	findHeader()
-	writeCopyright(copyright)
+	writeCopyright()
 	return endProcess()
 }

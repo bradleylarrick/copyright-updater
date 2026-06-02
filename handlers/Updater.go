@@ -109,8 +109,8 @@ func findHeader() {
 /*
  * Writes the copyright header to the output file.
  */
-func writeCopyright(copyright *Copyright) error {
-	text := copyright.GetCopyright(copyright, previous)
+func writeCopyright() error {
+	text := GetCopyright(previous)
 	writeLine(header)
 	for _, line := range text {
 		trimmed := strings.TrimRight(prefix+" "+line, " \t\n")

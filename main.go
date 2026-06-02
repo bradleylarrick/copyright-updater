@@ -28,13 +28,12 @@ import (
 var (
 	isPreview       bool
 	isVerbose       bool
-	template        string
+	templateFile    string
 	sourceDirs      []string
 	excludePatterns []string
 	srcDir          string
 	destDir         string
 	processor       *Processor
-	copyright       *handlers.Copyright
 )
 
 /*
@@ -67,14 +66,15 @@ func configure() {
 		os.Exit(1)
 	}
 
-	copyright = handlers.NewCopyright(template, Config.Copyright, isVerbose)
-	for _, line := range copyright.GetCopyright(copyright, "") {
-		fmt.Println(line)
-	}
-
-	if copyright.Copyright == nil {
+	template := handlers.LoadTemplate(templateFile, Config.Copyright, isVerbose)
+	if template == nil {
 		fmt.Fprintln(os.Stderr, "No copyright template found.")
 		os.Exit(1)
+	} else if isVerbose {
+		fmt.Println("Copyright template:")
+		for _, line := range template {
+			fmt.Println(line)
+		}
 	}
 }
 
@@ -192,7 +192,7 @@ func processCommandLine(cmdLine []string) (int, bool) {
 	isVerbose = *verboseFlag
 	isPreview = *previewFlag
 	destDir = *destArg
-	template = *templateArg
+	templateFile = *templateArg
 	populateExclusions(*excludedList)
 
 	args := flag.Args()

@@ -24,7 +24,7 @@ import (
 )
 
 type FileHandler interface {
-	Format(src *os.File, dest *os.File, copyright *handlers.Copyright) error
+	Format(src *os.File, dest *os.File) error
 }
 
 type Processor struct {
@@ -124,7 +124,7 @@ func (p Processor) ProcessFile(path string, name string) error {
 			return err
 		}
 
-		err = handler.Format(srcFile, tempFile, copyright)
+		err = handler.Format(srcFile, tempFile)
 		srcFile.Close()
 		tempFile.Close()
 		if err == nil {

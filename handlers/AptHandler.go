@@ -24,7 +24,7 @@ var (
 	aptProtected = []string{}
 )
 
-func (AptHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
+func (AptHandler) Format(src *os.File, dest *os.File) error {
 	err := startProcess(src, dest, aptHeader, aptFooter, aptPrefix)
 	if err != nil {
 		return err
@@ -34,6 +34,6 @@ func (AptHandler) Format(src *os.File, dest *os.File, copyright *Copyright) erro
 		findProtected(aptProtected)
 	}
 	findHeader()
-	writeCopyright(copyright)
+	writeCopyright()
 	return endProcess()
 }

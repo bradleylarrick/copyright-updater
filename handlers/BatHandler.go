@@ -24,7 +24,7 @@ var (
 	batProtected = []string{"@echo"}
 )
 
-func (BatHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
+func (BatHandler) Format(src *os.File, dest *os.File) error {
 	err := startProcess(src, dest, batHeader, batFooter, batPrefix)
 	if err != nil {
 		return err
@@ -34,6 +34,6 @@ func (BatHandler) Format(src *os.File, dest *os.File, copyright *Copyright) erro
 		findProtected(batProtected)
 	}
 	findHeader()
-	writeCopyright(copyright)
+	writeCopyright()
 	return endProcess()
 }

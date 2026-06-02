@@ -24,7 +24,7 @@ var (
 	hashProtected = []string{"#!"}
 )
 
-func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
+func (HashtagHandler) Format(src *os.File, dest *os.File) error {
 	err := startProcess(src, dest, hashHeader, hashFooter, hashPrefix)
 	if err != nil {
 		return err
@@ -34,6 +34,6 @@ func (HashtagHandler) Format(src *os.File, dest *os.File, copyright *Copyright) 
 		findProtected(hashProtected)
 	}
 	findHeader()
-	writeCopyright(copyright)
+	writeCopyright()
 	return endProcess()
 }

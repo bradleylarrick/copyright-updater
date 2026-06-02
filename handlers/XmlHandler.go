@@ -24,7 +24,7 @@ var (
 	xmlProtected = []string{"<?xml version", "<!DOCTYPE"}
 )
 
-func (XmlHandler) Format(src *os.File, dest *os.File, copyright *Copyright) error {
+func (XmlHandler) Format(src *os.File, dest *os.File) error {
 	err := startProcess(src, dest, xmlHeader, xmlFooter, xmlPrefix)
 	if err != nil {
 		return err
@@ -34,6 +34,6 @@ func (XmlHandler) Format(src *os.File, dest *os.File, copyright *Copyright) erro
 		findProtected(xmlProtected)
 	}
 	findHeader()
-	writeCopyright(copyright)
+	writeCopyright()
 	return endProcess()
 }
