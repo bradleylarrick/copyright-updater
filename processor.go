@@ -36,6 +36,7 @@ type Processor struct {
 func NewProcessor() *Processor {
 	return &Processor{
 		Handlers: map[string]FileHandler{
+			".apt":        handlers.AptHandler{},
 			".bash":       handlers.HashtagHandler{},
 			".bat":        handlers.BatHandler{},
 			".cs":         handlers.JavaHandler{},
