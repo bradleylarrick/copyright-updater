@@ -26,6 +26,7 @@ import (
 )
 
 var (
+	version         string = "1.0.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
 	isPreview       bool
 	isVerbose       bool
 	templateFile    string
@@ -179,12 +180,13 @@ func populateExclusions(excludedList string) {
 func processCommandLine(cmdLine []string) (int, bool) {
 	flag.NewFlagSet("copyright", flag.ExitOnError)
 	flag.Usage = Usage
-	helpFlag := flag.Bool("h", false, "print this message and exit")
-	verboseFlag := flag.Bool("v", false, "set verbose logging")
-	previewFlag := flag.Bool("p", false, "only list files that will be updated")
 	destArg := flag.String("d", "", "destination `directory` (defaults to source)")
-	templateArg := flag.String("t", "", "a copyright `template` file (default: .copyright.txt)")
 	excludedList := flag.String("e", "", "a list of directory `patterns` to exclude")
+	helpFlag := flag.Bool("h", false, "print this message and exit")
+	previewFlag := flag.Bool("p", false, "only list files that will be updated")
+	templateArg := flag.String("t", "", "a copyright `template` file (default: .copyright.txt)")
+	verboseFlag := flag.Bool("v", false, "set verbose logging")
+	versionFlag := flag.Bool("version", false, "display the version and exit")
 
 	flag.CommandLine.Parse(cmdLine)
 
@@ -193,8 +195,14 @@ func processCommandLine(cmdLine []string) (int, bool) {
 		return 0, false // stop processing, but no error
 	}
 
-	isVerbose = *verboseFlag
+	if *versionFlag {
+		program := filepath.Base(os.Args[0])
+		fmt.Printf("%s %s\n", program, version)
+		return 0, false // stop processing, but no error
+	}
+
 	isPreview = *previewFlag
+	isVerbose = *verboseFlag
 	destDir = *destArg
 	templateFile = *templateArg
 	populateExclusions(*excludedList)
