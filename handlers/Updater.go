@@ -74,17 +74,25 @@ func findProtected(protectedList []string) {
  * if found, skips to the end of the header.
  */
 func findHeader() {
-	headerStart := -1
+	headerStart := false
 	headerEnd := -1
 	hasCopyright := false
 	for i := ndx; i < len(lines); i++ {
 		line := lines[i]
-		if headerStart < 0 {
-			if strings.EqualFold(line, header) {
-				headerStart = i
-				continue
+		if !headerStart {
+			if len(line) == 0 {
+				continue // skip blank lines before the header
+			} else if strings.HasPrefix(line, header) {
+				headerStart = true
 			} else {
 				break // No header block found
+			}
+		}
+
+		if !hasCopyright {
+			if strings.Contains(strings.ToLower(line), "copyright") {
+				hasCopyright = true
+				findPreviousYear(line)
 			}
 		}
 
@@ -93,11 +101,6 @@ func findHeader() {
 		if isCommentFooter(i, line) {
 			headerEnd = i
 			break
-		} else if strings.HasPrefix(line, prefix) {
-			if strings.Contains(strings.ToLower(line), "copyright") {
-				hasCopyright = true
-				findPreviousYear(line)
-			}
 		}
 	}
 
@@ -126,8 +129,8 @@ func writeCopyright() error {
 func endProcess() error {
 	for i := ndx; i < len(lines); i++ {
 		line := lines[i]
-		// Add a blank line after the header if the next line is non-empty
-		if i == ndx && len(line) > 0 {
+		// Add a blank line after the header if the next line is a package declaration
+		if i == ndx && strings.HasPrefix(line, "package") {
 			writeLine("")
 		}
 		writeLine(line)

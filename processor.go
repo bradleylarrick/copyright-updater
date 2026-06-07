@@ -48,6 +48,7 @@ func NewProcessor() *Processor {
 			".html":       handlers.XmlHandler{},
 			".java":       handlers.JavaHandler{},
 			".js":         handlers.JavaHandler{},
+			".md":         handlers.XmlHandler{},
 			".mk":         handlers.HashtagHandler{},
 			".properties": handlers.HashtagHandler{},
 			".py":         handlers.HashtagHandler{},
