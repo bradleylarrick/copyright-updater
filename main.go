@@ -32,7 +32,7 @@ var (
 	templateFile    string
 	sourceDirs      []string
 	excludePatterns []string
-	srcDir          string
+	source          string
 	destDir         string
 	processor       *Processor
 )
@@ -85,19 +85,24 @@ func configure() {
 
 // Process the given source directories for files to process.
 func searchDirectories() {
-	for _, dir := range sourceDirs {
-		srcDir = filepath.Clean(dir)
-		info, err := os.Stat(srcDir)
+	for _, src := range sourceDirs {
+		source = filepath.Clean(src)
+		info, err := os.Stat(source)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			continue
 		}
-		if !info.IsDir() {
-			fmt.Fprintf(os.Stderr, "Invalid directory: %s\n", srcDir)
-			continue
+		if info.IsDir() {
+			err = searchDirectory(source)
+		} else {
+			fullPath, err := filepath.Abs(source)
+			if err == nil {
+				dir, file := filepath.Split(fullPath)
+				err = processor.ProcessFile(dir, file)
+			}
 		}
-		err = searchDirectory(srcDir)
 		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
 			os.Exit(2)
 		}
 	}

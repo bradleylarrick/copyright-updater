@@ -190,7 +190,7 @@ func findPreviousYear(line string) {
  */
 func isCommentFooter(index int, line string) bool {
 	ret := false
-	if strings.HasSuffix(line, footer) {
+	if strings.HasSuffix(line, strings.TrimSpace(footer)) {
 		ret = true
 		if strings.EqualFold(footer, prefix) {
 			if index < len(lines)-1 {
