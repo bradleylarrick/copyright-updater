@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+#  Copyright (c) 2024-2026 Bradley Larrick. All rights reserved.
+#
+#  Licensed under the Apache License v2.0
+#  https://www.apache.org/licenses/LICENSE-2.0
+
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+
+# To enable this hook, rename this file to "pre-commit" and
+# place it in your hooks path.
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+# If you want to allow non-ASCII filenames set this variable to true.
+allownonascii=$(git config --type=bool hooks.allownonascii)
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Cross platform projects tend to avoid non-ASCII filenames; prevent
+# them from being added to the repository. We exploit the fact that the
+# printable range starts at the space character and ends with tilde.
+if [ "$allownonascii" != "true" ] &&
+	# Note that the use of brackets around a tr range is ok here, (it's
+	# even required, for portability to Solaris 10's /usr/bin/tr), since
+	# the square bracket bytes happen to fall in the designated range.
+	test $(git diff-index --cached --name-only --diff-filter=A -z $against |
+	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+then
+	cat <<\EOF
+Error: Attempt to add a non-ASCII file name.
+
+This can cause problems if you want to work with people on other platforms.
+
+To be portable it is advisable to rename the file.
+
+If you know what you are doing you can disable this check using:
+
+  git config hooks.allownonascii true
+EOF
+	exit 1
+fi
+
+# If there are whitespace errors, print the offending file names and fail.
+git diff-index --check --cached $against --
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+	echo "Whitespace test failed."
+	exit 1
+fi
+
+FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+# Exit if no files being committed
+if [ -z "$FILES" ]; then
+    exit 0
+fi
+
+~/go/bin/copyright $FILES
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+	echo "Copyright update failed."
+	exit 1
+fi
+
+FILES=$(git diff --name-only --diff-filter=ACMR)
+# Exit with error if copyright updated any of the files.
+if [ -n "$FILES" ]; then
+	# If you want to allow adds during the precommit, set this variable to true.
+	allowprecommitadds=$(git config --type=bool hooks.allowprecommitadds)
+	if [ $allowprecommitadds == "true" ]; then
+		git add $FILES
+	else
+		cat <<\EOF
+The copyright was updated on one or more files.
+
+You must re-stage the updated files and re-run your commit.
+
+You can allow adds during the pre-commit (not recommended) using:
+
+  git config hooks.allowprecommitadds true
+EOF
+	exit 1
+	fi
+fi
