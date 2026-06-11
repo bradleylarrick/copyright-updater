@@ -26,7 +26,7 @@ import (
 )
 
 var (
-	version         string = "1.0.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
+	version         string = "1.1.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
 	isPreview       bool
 	isVerbose       bool
 	templateFile    string
@@ -41,7 +41,7 @@ var (
  * The Usage function prints the command line usage message.
  */
 var Usage = func() {
-	fmt.Fprintln(flag.CommandLine.Output(), "usage: copyright [options] <source directory> ...")
+	fmt.Fprintln(flag.CommandLine.Output(), "usage: copyright [options] <source> ...")
 	flag.PrintDefaults()
 }
 
