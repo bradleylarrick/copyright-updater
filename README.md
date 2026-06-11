@@ -64,7 +64,7 @@ go build
 The Copyright Updater can be executed from the command line as follows:
 
 ```bash
-copyright [options] <source directory> ...
+copyright [options] <source> ...
   -d directory
         destination directory (defaults to source)
   -e patterns
@@ -76,7 +76,7 @@ copyright [options] <source directory> ...
   -v    set verbose logging
 ```
 
-Where `<source directory>` is the path to the directory containing the files to process.
+Where `<source>` is the path to a file to process or a directory containing files to process.
 
 ### Options
 The following options are available:
@@ -84,44 +84,52 @@ The following options are available:
 ```bash
   -d <directory> — destination directory for updated files (defaults to updating in-place)
   -e <patterns>  — a list of patterns of directories and/or files to exclude
+  -h             — print this message and exit
   -p             — only lists the files that will be updated; no changes are made to the files
   -t <template>  — a copyright template file (defaults to ".copyright.txt")
   -v             — sets verbose logging
+  -version       — print the version and exit
 ```
 
 ## Examples
 
+This updates all matching files in the current directory and its subdirectories in-place:
 ```bash
 copyright .
 ```
-This updates all matching files in the current directory and its subdirectories in-place.
 
+This updates all matching files in the `src/main` and `src/test` directories and their subdirectories in-place:
 ```bash
 copyright src/main src/test
 ```
-This updates all matching files in the `src/main` and `src/test` directories and their subdirectories in-place.
 
+This updates the copyright header in the `Sample.java` and `SampleTest.java` files:
+```bash
+copyright src/main/Sample.java src/test/SampleTest.java
+```
+
+This lists the files in the current directory and its subdirectories that will be updated without making any changes
+to the files:
 ```bash
 copyright -p .
 ```
-This lists the files that will be updated without making any changes to the files.
 
+This updates all matching files in the current directory and its subdirectories and writes the updated files to `C:/temp`:
 ```bash
 copyright -d C:/temp .
 ```
-This updates all matching files in the current directory and its subdirectories and writes the updated files to `C:/temp`.
 
+This updates all matching files in the current directory and its subdirectories in-place using the template file
+`C:/MyCopyrightTemplate.txt`:
 ```bash
 copyright -t C:/MyCopyrightTemplate.txt .
 ```
-This updates all matching files in the current directory and its subdirectories in-place using the template file
-`C:/MyCopyrightTemplate.txt`.
 
+This updates all matching files in the current directory and its subdirectories in-place, excluding files in the
+`test` and `dist` directories:
 ```bash
 copyright -e '**/test/**/*,**/dist/**/*' .
 ```
-This updates all matching files in the current directory and its subdirectories in-place, excluding files in the
-`test` and `dist` directories.
 
 ## Global Configuration File
 
@@ -184,3 +192,16 @@ the copyright template is not applied until after the protected line(s). Predefi
 `APT` files are a special case because there may be multiple protected lines, including ones containing regular text, at the
 beginning of the file. In this case, the copyright template is not applied until the processor finds the first blank or
 comment line.
+
+## Updating with Pre-commit Hooks
+
+To use the program with pre-commit hooks, create a global hooks path in your home directory, copy the included
+pre-commit hook script to the hooks path, and set the global hooks path in your Git configuration:
+```bash
+mkdir -p ~/.githooks
+cp <path-to-copyright>/pre-commit.sample ~/.githooks/precommit
+git config --global core.hooksPath ~/.githooks
+```
+The pre-commit script assumes the copyright program is installed in `~/go/bin`.
+
+If, during a commit, some of the staged files require a copyright update, the pre-commit hook will automatically run and update the files as needed. If updates are made, the updated files will need to be re-staged and the commit re-run.
