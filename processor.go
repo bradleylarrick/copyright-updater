@@ -52,6 +52,7 @@ func NewProcessor() *Processor {
 			".mk":         handlers.HashtagHandler{},
 			".properties": handlers.HashtagHandler{},
 			".py":         handlers.HashtagHandler{},
+			".rs":         handlers.JavaHandler{},
 			".sh":         handlers.HashtagHandler{},
 			".toml":       handlers.HashtagHandler{},
 			".txt":        handlers.HashtagHandler{},

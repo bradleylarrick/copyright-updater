@@ -32,6 +32,7 @@ Supported file types inherent to the program include:
 	.mk         — Makefiles
 	.properties — Properties files
 	.py         — Python source files
+	.rs         — Rust source files
 	.sh         — Shell script files
 	.toml       — TOML files
 	.txt        — Text files
