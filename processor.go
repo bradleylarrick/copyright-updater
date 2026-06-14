@@ -15,7 +15,9 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -56,6 +58,7 @@ func NewProcessor() *Processor {
 			".sh":         handlers.HashtagHandler{},
 			".toml":       handlers.HashtagHandler{},
 			".txt":        handlers.HashtagHandler{},
+			".vm":         handlers.VmHandler{},
 			".xaml":       handlers.XmlHandler{},
 			".xmi":        handlers.XmlHandler{},
 			".xml":        handlers.XmlHandler{},
@@ -94,21 +97,14 @@ func (p Processor) ProcessFile(path string, name string) error {
 		return nil
 	}
 
-	ext := filepath.Ext(name)
-	// If the file has no extension and is a script file, use ".sh" as the extension.
-	if len(ext) == 0 && isScriptFile(fullSrc) {
-		ext = ".sh"
-	}
-
-	// If the file is a Makefile or Jenkinsfile, use the appropriate extension.
-	if strings.HasPrefix(strings.ToLower(name), "makefile") {
-		ext = ".sh"
-	} else if strings.HasPrefix(strings.ToLower(name), "jenkinsfile") {
-		ext = ".java"
-	}
+	// Find the extension, which determines the updater to use
+	ext := findExtension(name, fullSrc)
 
 	handler, ok := p.Handlers[ext]
 	if !ok {
+		if isVerbose {
+			fmt.Printf("Skipping %s\n", fullSrc)
+		}
 		return nil
 	} else if isPreview {
 		fmt.Println(fullSrc)
@@ -143,12 +139,39 @@ func (p Processor) ProcessFile(path string, name string) error {
 
 }
 
+/**
+ * Finds the extension (which determines the updater to use) of the file based on its name.
+ */
+func findExtension(name string, fullSrc string) string {
+	ext := filepath.Ext(name)
+	// If the file has no extension and is a script file, use ".sh" as the extension.
+	if len(ext) == 0 && isScriptFile(fullSrc) {
+		return ".sh"
+	}
+
+	// If the file is a Makefile or Jenkinsfile, use the appropriate extension.
+	if strings.HasPrefix(strings.ToLower(name), "makefile") {
+		ext = ".mk"
+	} else if strings.HasPrefix(strings.ToLower(name), "jenkinsfile") {
+		ext = ".java"
+	} else {
+		pieces := strings.Split(name, ".")
+		ndx := len(pieces) - 1
+		if len(pieces) > 2 && strings.EqualFold(pieces[ndx], "vm") && !strings.EqualFold(pieces[ndx-1], "txt") {
+			ndx--
+		}
+		ext = "." + pieces[ndx]
+	}
+
+	return ext
+}
+
 /*
  * Validates the destination path, creating it if it does not exist.
  */
 func validateDestPath(destPath string) error {
 	if _, err := os.Stat(destPath); err != nil {
-		if os.IsNotExist(err) {
+		if errors.Is(err, fs.ErrNotExist) {
 			if err := os.MkdirAll(destPath, 0755); err != nil {
 				return err
 			}

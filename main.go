@@ -26,7 +26,7 @@ import (
 )
 
 var (
-	version         string = "1.1.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
+	version         string = "1.2.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
 	isPreview       bool
 	isVerbose       bool
 	templateFile    string

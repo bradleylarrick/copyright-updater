@@ -1,0 +1,33 @@
+ ------
+ Introduction
+ ------
+ Bradley Larrick
+ ------
+ 2023-08-28
+ ------
+
+About ${project.name}
+
+ ${project.description} They include:
+
+	* {{{./checksum.html}Checksum}} \u2014 a program that computes or validates the checksum value for a file.
+
+	* {{{./copyright.html}Copyright}} \u2014 a program that updates the copyright notice within various
+	types of source files.
+
+	* {{{./findjar.html}Findjar}} \u2014 a program that searches JAR files in a given file path
+	for a given class name.
+
+	* {{{./fixfiledate.html}FixFileDate}} \u2014 a program that updates the file system dates
+	of files based on available metadata.
+
+	* {{{./mklink.html}MkLink}} \u2014 a program that creates Microsoft-style links.
+
+	* {{{./password.html}Password}} \u2014 a program that generates random password strings.
+
+	* {{{./readlog.html}ReadLog}} \u2014 a program for reading and displaying the MongoDB log file.
+
+	* {{{./words.html}Words}} \u2014 a simple program that accepts a string of characters and then displays
+	all words in a standard word list that can be constructed from those characters.
+
+	* {{{./zip.html}Zip}} \u2014 a program to create and read ZIP files.

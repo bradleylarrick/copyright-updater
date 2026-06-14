@@ -1,0 +1,45 @@
+---
+# This is a comment. The three dashes above indicate the start of the document.
+# YAML relies strictly on spaces for indentation. Tabs are NOT allowed.
+
+# 1. Key-Value Pairs (Scalars)
+app_name: "TaskManager Pro"
+version: 1.2
+is_production: false
+max_connections: 5000
+
+# 2. Objects / Dictionaries (Nested Blocks)
+database:
+  host: "localhost"
+  port: 5432
+  username: "admin_user"
+  # Multiline string preserving newlines (\n) using the pipe operator (|)
+  motd: |
+    Welcome to TaskManager Database!
+    Maintenance happens every Sunday.
+
+# 3. Sequences / Lists (Indented Block Format)
+features_enabled:
+  - user_authentication
+  - data_export
+  - email_notifications
+
+# 4. Complex Data: List of Dictionaries
+team_members:
+  - name: "Alice Smith"
+    role: "Lead Developer"
+    skills:
+      - Python
+      - Docker
+  - name: "Bob Jones"
+    role: "DevOps Engineer"
+    skills:
+      - Kubernetes
+      - Ansible
+
+# 5. Inline / Flow Collections (JSON-style shorthand syntax)
+allowed_tags: ['bug', 'feature', 'documentation']
+server_status: { status: "active", uptime: 3600 }
+
+...
+# The three dots above indicate the optional end of the document.

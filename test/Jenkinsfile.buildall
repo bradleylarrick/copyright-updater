@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2022-2023 Bradley Larrick. All rights reserved.
+ */
+@Library( 'pipeline-library' )_
+
+pipeline {
+	agent any
+	options { timestamps() }
+
+	stages {
+	}
+
+	post {
+		failure { sendEmail( "FAILED" ) }
+		fixed { sendEmail( "Fixed" ) }
+		unstable { sendEmail( "Unstable" ) }
+	}
+}
