@@ -36,6 +36,7 @@ Supported file types inherent to the program include:
 	.sh         — Shell script files
 	.toml       — TOML files
 	.txt        — Text files
+	.vm         — Apache Velocity template files
 	.xaml       — XAML files
 	.xmi        — XMI files
 	.xml        — XML files
@@ -179,6 +180,7 @@ The program supports five types of file processors:
  -  `bat`     — MSDos Batch comments ('`REM`')
  -  `hashtag` — Hashtag style comments ('`#`')
  -  `java`    — Java style comments ('`/*`' and '`*/`')
+ -  `vm`      — Apache Velocity template comments ('`##`')
  -  `xml`     — XML style comments ('`<!--`' and '`-->`')
 
 The file processors also support 'protected' lines at the beginning of the file that must precede the copyright comment block.
@@ -192,6 +194,8 @@ the copyright template is not applied until after the protected line(s). Predefi
 `APT` files are a special case because there may be multiple protected lines, including ones containing regular text, at the
 beginning of the file. In this case, the copyright template is not applied until the processor finds the first blank or
 comment line.
+
+Files with a `.vm` extension are also a special case. The file name is inspected for "additional" extensions which may determine which file processor to use. For example, file names ending with `.apt.vm` extension are processed using the `apt` file processor. Files with a `.vm` extension alone or with the extension `txt.vm` are processed using the `vm` file processor.
 
 ## Updating with Pre-commit Hooks
 
