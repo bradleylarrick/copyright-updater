@@ -169,7 +169,7 @@ func populateExclusions(excludedList string) {
 				fmt.Fprintf(os.Stderr, "Invalid excluded path: %s\n", path)
 				continue
 			}
-			if strings.HasSuffix(excluded, `\*`) {
+			if strings.HasSuffix(path, `/*`) {
 				excludedDirs = append(excludedDirs, excluded[:len(excluded)-2])
 			} else {
 				excludedPaths = append(excludedPaths, excluded)
