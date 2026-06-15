@@ -13,6 +13,9 @@
 
 # Copyright Updater
 
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
 This program updates the copyright header in all supported files in the specified directory(s).
 Supported file types inherent to the program include:
 
@@ -48,7 +51,18 @@ In addition, files without extensions are checked for the Bash script (`#!/bin/b
 shebang and are processed appropriately; files with a name starting with `Jenkinsfile` are processed the same as Java files;
 and files with a name starting with `Makefile` are processed as `.mk` files.
 
-## Build
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Options](#options)
+- [Examples](#examples)
+- [Configuration](#global-configuration-file)
+- [Copyright Template](#copyright-template-processing)
+- [Supported File Processors](#supported-file-processors)
+- [Updating with Pre-commit](#updating-with-pre-commit-hook)
+- [Version Notes](#version-notes)
+- [License](#license)
+
+## 🚀 Getting Started
 
 To build the Copyright Updater, first download the latest version of go from the [official website](https://golang.org/dl/).
 
@@ -60,7 +74,7 @@ cd copyright-updater
 go build
 ```
 
-## Execution
+## 🛠️ Usage
 
 The Copyright Updater can be executed from the command line as follows:
 
@@ -79,7 +93,7 @@ copyright [options] <source> ...
 
 Where `<source>` is the path to a file to process or a directory containing files to process.
 
-### Options
+### ⚙️ Options
 The following options are available:
 
 ```bash
@@ -92,7 +106,7 @@ The following options are available:
   -version       — print the version and exit
 ```
 
-## Examples
+## 📝 Examples
 
 This updates all matching files in the current directory and its subdirectories in-place:
 ```bash
@@ -132,7 +146,7 @@ This updates all matching files in the current directory and its subdirectories 
 copyright -e '**/test/**/*,**/dist/**/*' .
 ```
 
-## Global Configuration File
+## 🌐 Global Configuration File
 
 The global configuration file is a TOML file that can be used to set default value for the copyright template
 and add custom file extensions to the list of supported files. It is located in the user's home directory under the `.copyright`
@@ -197,9 +211,9 @@ comment line.
 
 Files with a `.vm` extension are also a special case. The file name is inspected for "additional" extensions which may determine which file processor to use. For example, file names ending with `.apt.vm` extension are processed using the `apt` file processor. Files with a `.vm` extension alone or with the extension `txt.vm` are processed using the `vm` file processor.
 
-## Updating with Pre-commit Hooks
+## <span style="color:red;">&#10140;</span> Updating with Pre-commit Hook
 
-To use the program with pre-commit hooks, create a global hooks path in your home directory, copy the included
+To use the program with a pre-commit hook, create a global hooks path in your home directory, copy the included
 pre-commit hook script to the hooks path, and set the global hooks path in your Git configuration:
 ```bash
 mkdir -p ~/.githooks
@@ -209,3 +223,24 @@ git config --global core.hooksPath ~/.githooks
 The pre-commit script assumes the copyright program is installed in `~/go/bin`.
 
 If, during a commit, some of the staged files require a copyright update, the pre-commit hook will automatically run and update the files as needed. If updates are made, the updated files will need to be re-staged and the commit re-run.
+
+## 📋 Version Notes
+
+### Version 1.2.0 &mdash; 2026-06-16
+
+- Refactored exclusions.
+
+### Version 1.1.0 &mdash; 2026-06-11
+
+- Refactored to allow specifying a file on the command line.
+- Added pre-commit.sample file.
+- Added sample configuration file.
+- Updated the license file.
+
+### Version 1.0.0 &mdash; 2026-06-03
+
+- Initial release.
+
+## 📜 License
+
+Licensed with the [Apache 2 License](https://www.apache.org/licenses/LICENSE-2.0.txt).
