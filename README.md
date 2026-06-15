@@ -13,8 +13,7 @@
 
 # Copyright Updater
 
-[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
+[![Apache 2](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 This program updates the copyright header in all supported files in the specified directory(s).
 Supported file types inherent to the program include:
