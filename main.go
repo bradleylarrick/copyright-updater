@@ -26,15 +26,16 @@ import (
 )
 
 var (
-	version         string = "1.2.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
-	isPreview       bool
-	isVerbose       bool
-	templateFile    string
-	sourceDirs      []string
-	excludePatterns []string
-	source          string
-	destDir         string
-	processor       *Processor
+	version       string = "1.2.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
+	isPreview     bool
+	isVerbose     bool
+	templateFile  string
+	sources       []string
+	excludedDirs  []string
+	excludedPaths []string
+	source        string
+	destDir       string
+	processor     *Processor
 )
 
 /*
@@ -51,11 +52,11 @@ func main() {
 		os.Exit(ret)
 	}
 
-	displayMemory()
+	// displayMemory()
 	processor = NewProcessor()
 	configure()
-	searchDirectories()
-	displayMemory()
+	processSources()
+	// displayMemory()
 }
 
 /*
@@ -77,15 +78,13 @@ func configure() {
 			fmt.Println(line)
 		}
 		fmt.Println("Handlers:")
-		// for _, handler := range processor.Handlers {
 		fmt.Println(processor.Handlers)
-		// }
 	}
 }
 
 // Process the given source directories for files to process.
-func searchDirectories() {
-	for _, src := range sourceDirs {
+func processSources() {
+	for _, src := range sources {
 		source = filepath.Clean(src)
 		info, err := os.Stat(source)
 		if err != nil {
@@ -95,11 +94,8 @@ func searchDirectories() {
 		if info.IsDir() {
 			err = searchDirectory(source)
 		} else {
-			fullPath, err := filepath.Abs(source)
-			if err == nil {
-				dir, file := filepath.Split(fullPath)
-				err = processor.ProcessFile(dir, file)
-			}
+			dir, file := filepath.Split(source)
+			err = processor.ProcessFile(dir, file)
 		}
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -110,6 +106,13 @@ func searchDirectories() {
 
 // Traverse the given directory for files to process.
 func searchDirectory(path string) error {
+	if IsExcluded(path, excludedDirs) {
+		if isVerbose {
+			fmt.Printf("Skipping excluded directory: %s\n", path)
+		}
+		return nil
+	}
+
 	if isVerbose {
 		fmt.Printf("Processing directory %s ...\n", path)
 	}
@@ -130,13 +133,6 @@ func searchDirectory(path string) error {
 			continue
 		}
 		if entry.IsDir() {
-			if IsExcluded(fullname) {
-				if isVerbose {
-					fmt.Printf("Skipping excluded directory: %s\n", fullname)
-				}
-				continue
-			}
-
 			err = searchDirectory(fullname)
 			if err != nil {
 				return err
@@ -154,8 +150,8 @@ func searchDirectory(path string) error {
 }
 
 // Returns true if the path is excluded by the exclusions list.
-func IsExcluded(path string) bool {
-	for _, pattern := range excludePatterns {
+func IsExcluded(path string, excludedPatterns []string) bool {
+	for _, pattern := range excludedPatterns {
 		match, _ := doublestar.PathMatch(pattern, path)
 		if match {
 			return true
@@ -173,7 +169,11 @@ func populateExclusions(excludedList string) {
 				fmt.Fprintf(os.Stderr, "Invalid excluded path: %s\n", path)
 				continue
 			}
-			excludePatterns = append(excludePatterns, excluded)
+			if strings.HasSuffix(excluded, `\*`) {
+				excludedDirs = append(excludedDirs, excluded[:len(excluded)-2])
+			} else {
+				excludedPaths = append(excludedPaths, excluded)
+			}
 		}
 	}
 }
@@ -220,7 +220,7 @@ func processCommandLine(cmdLine []string) (int, bool) {
 		return 1, false // stop processing and exit with error value 1
 	}
 
-	sourceDirs = args[0:]
+	sources = args[0:]
 	return 0, true // all's good
 }
 

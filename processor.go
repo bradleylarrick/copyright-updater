@@ -89,7 +89,7 @@ func (p Processor) ProcessFile(path string, name string) error {
 
 	fullSrc := filepath.Join(path, name)
 	fullDest := filepath.Join(destPath, name)
-	exclude := IsExcluded(fullSrc)
+	exclude := IsExcluded(fullSrc, excludedPaths)
 	if exclude {
 		if isVerbose {
 			fmt.Printf("Skipping excluded file: %s\n", fullSrc)
@@ -170,6 +170,10 @@ func findExtension(name string, fullSrc string) string {
  * Validates the destination path, creating it if it does not exist.
  */
 func validateDestPath(destPath string) error {
+	if destPath == "" {
+		return nil
+	}
+
 	if _, err := os.Stat(destPath); err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			if err := os.MkdirAll(destPath, 0755); err != nil {
