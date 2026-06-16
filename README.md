@@ -212,7 +212,7 @@ beginning of the file. In this case, the copyright template is not applied until
 comment line.
 
 Also, the `JavaHandler` recognizes files that have a comment block using double-slash prefixes and replaces it with
-a new comment block using double-slash commnents.
+a new comment block using double-slash comments.
 
 Files with a `.vm` extension are also a special case. The file name is inspected for "additional" extensions which may determine which file processor to use. For example, file names ending with `.apt.vm` extension are processed using the `apt` file processor. Files with a `.vm` extension alone or with the extension `txt.vm` are processed using the `vm` file processor.
 
