@@ -96,8 +96,8 @@ func findHeader() {
 			}
 		}
 
-		// We need to check for the footer line before checkning for a prefixed line to avoid
-		//  matching comment lines as footers when the file has single-character comment prefixes.
+		// We need to check for the footer line before checking for a prefixed line to avoid
+		//  matching comment lines as footers when the file uses simple comment prefixes.
 		if isCommentFooter(i, line) {
 			headerEnd = i
 			break

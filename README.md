@@ -211,6 +211,9 @@ the copyright template is not applied until after the protected line(s). Predefi
 beginning of the file. In this case, the copyright template is not applied until the processor finds the first blank or
 comment line.
 
+Also, the `JavaHandler` recognizes files that have a comment block using double-slash prefixes and replaces it with
+a new comment block using double-slash commnents.
+
 Files with a `.vm` extension are also a special case. The file name is inspected for "additional" extensions which may determine which file processor to use. For example, file names ending with `.apt.vm` extension are processed using the `apt` file processor. Files with a `.vm` extension alone or with the extension `txt.vm` are processed using the `vm` file processor.
 
 ## &#10140; Updating with Pre-commit Hook
@@ -228,11 +231,12 @@ If, during a commit, some of the staged files require a copyright update, the pr
 
 ## 📋 Version Notes
 
-### Version 1.3.0 &mdash; 2026-06-17
+### Version 1.3.0 &mdash; 2026-06-16
 
 - Added ability to define global exclusions in the configuration file.
+- Extended JavaHandler to support comment blocks using double-slash prefixes.
 
-### Version 1.2.0 &mdash; 2026-06-16
+### Version 1.2.0 &mdash; 2026-06-15
 
 - Refactored exclusions.
 

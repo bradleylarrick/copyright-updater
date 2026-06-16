@@ -14,8 +14,6 @@
 package main
 
 import (
-	"fmt"
-	"github.com/pelletier/go-toml/v2"
 	"path/filepath"
 	"testing"
 
@@ -34,10 +32,6 @@ func TestLoadExtensions(t *testing.T) {
 			{Extension: ".789", Processor: "xml", Protected: []string{}},
 		},
 	}
-
-	b, err := toml.Marshal(config)
-	assert.NoError(t, err)
-	fmt.Println(string(b))
 
 	loadExtensions(config)
 	assert.Equal(t, handlers.AptHandler{}, processor.Handlers[".abc"])

@@ -13,7 +13,10 @@
 
 package handlers
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type JavaHandler struct{}
 
@@ -22,6 +25,8 @@ var (
 	javaFooter    = " */"
 	javaPrefix    = " *"
 	JavaProtected = []string{}
+
+	slashes = "//"
 )
 
 func (JavaHandler) Format(src *os.File, dest *os.File) error {
@@ -30,9 +35,14 @@ func (JavaHandler) Format(src *os.File, dest *os.File) error {
 		return err
 	}
 
+	if strings.HasPrefix(lines[ndx], slashes) {
+		setSlashPrefixes()
+	}
+
 	if len(JavaProtected) > 0 {
 		findProtected(JavaProtected)
 	}
+
 	findHeader()
 	writeCopyright()
 	return endProcess()
@@ -43,4 +53,13 @@ func (JavaHandler) Format(src *os.File, dest *os.File) error {
  */
 func (JavaHandler) AddProtected(protected []string) {
 	addProtected(&JavaProtected, protected)
+}
+
+/*
+ * Set the prefixes to slash prefixes.
+ */
+func setSlashPrefixes() {
+	header = slashes
+	footer = slashes
+	prefix = slashes
 }
