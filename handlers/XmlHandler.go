@@ -21,7 +21,7 @@ var (
 	xmlHeader    = "<!--"
 	xmlFooter    = " -->"
 	xmlPrefix    = " "
-	xmlProtected = []string{"<?xml version", "<!DOCTYPE"}
+	XmlProtected = []string{"<?xml version", "<!DOCTYPE"}
 )
 
 func (XmlHandler) Format(src *os.File, dest *os.File) error {
@@ -30,8 +30,8 @@ func (XmlHandler) Format(src *os.File, dest *os.File) error {
 		return err
 	}
 
-	if len(xmlProtected) > 0 {
-		findProtected(xmlProtected)
+	if len(XmlProtected) > 0 {
+		findProtected(XmlProtected)
 	}
 	findHeader()
 	writeCopyright()
@@ -42,5 +42,5 @@ func (XmlHandler) Format(src *os.File, dest *os.File) error {
  * Load additional protected patterns.
  */
 func (XmlHandler) AddProtected(protected []string) {
-	addProtected(&xmlProtected, protected)
+	addProtected(&XmlProtected, protected)
 }

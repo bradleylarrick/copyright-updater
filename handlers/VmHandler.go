@@ -21,7 +21,7 @@ var (
 	vmHeader    = "##"
 	vmFooter    = "##"
 	vmPrefix    = "##"
-	vmProtected = []string{}
+	VmProtected = []string{}
 )
 
 func (VmHandler) Format(src *os.File, dest *os.File) error {
@@ -30,8 +30,8 @@ func (VmHandler) Format(src *os.File, dest *os.File) error {
 		return err
 	}
 
-	if len(vmProtected) > 0 {
-		findProtected(vmProtected)
+	if len(VmProtected) > 0 {
+		findProtected(VmProtected)
 	}
 	findHeader()
 	writeCopyright()
@@ -42,5 +42,5 @@ func (VmHandler) Format(src *os.File, dest *os.File) error {
  * Load additional protected patterns.
  */
 func (VmHandler) AddProtected(protected []string) {
-	addProtected(&hashProtected, protected)
+	addProtected(&VmProtected, protected)
 }

@@ -24,7 +24,7 @@ var (
 	aptHeader    = "~~"
 	aptFooter    = "~~"
 	aptPrefix    = "~~"
-	aptProtected = []string{}
+	AptProtected = []string{}
 )
 
 func (AptHandler) Format(src *os.File, dest *os.File) error {
@@ -33,8 +33,8 @@ func (AptHandler) Format(src *os.File, dest *os.File) error {
 		return err
 	}
 
-	if len(aptProtected) > 0 {
-		findProtected(aptProtected)
+	if len(AptProtected) > 0 {
+		findProtected(AptProtected)
 	}
 
 	skipAptHeader()
@@ -47,7 +47,7 @@ func (AptHandler) Format(src *os.File, dest *os.File) error {
  * Load additional protected patterns.
  */
 func (AptHandler) AddProtected(protected []string) {
-	addProtected(&aptProtected, protected)
+	addProtected(&AptProtected, protected)
 }
 
 /*

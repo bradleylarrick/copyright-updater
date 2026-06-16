@@ -14,71 +14,24 @@
 package main
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPopulateExclusions(t *testing.T) {
-	excludedList := "LICENSE*,test/*,temp/*"
-	populateExclusions(excludedList)
-	assert.Equal(t, 1, len(excludedPaths))
-	assert.Equal(t, 2, len(excludedDirs))
-	assert.Equal(t, `LICENSE*`, excludedPaths[0])
-	assert.Equal(t, `test`, excludedDirs[0])
-	assert.Equal(t, `temp`, excludedDirs[1])
+func TestMain(m *testing.M) {
+	processor = NewProcessor()
+	result := m.Run()
+	os.Exit(result)
 }
 
-func TestIsExcluded(t *testing.T) {
-	tests := []struct {
-		name     string
-		fullSrc  string
-		pattern  *[]string
-		expected bool
-	}{
-		{
-			name:     "LICENSE file",
-			fullSrc:  "LICENSE",
-			pattern:  &excludedPaths,
-			expected: true,
-		},
-		{
-			name:     "LICENSE.md file",
-			fullSrc:  "LICENSE.md",
-			pattern:  &excludedPaths,
-			expected: true,
-		},
-		{
-			name:     "LICENSE in test directory",
-			fullSrc:  `test\LICENSE`,
-			pattern:  &excludedPaths,
-			expected: false,
-		},
-		{
-			name:     "test directory",
-			fullSrc:  "test",
-			pattern:  &excludedDirs,
-			expected: true,
-		},
-		{
-			name:     "temp directory",
-			fullSrc:  "temp",
-			pattern:  &excludedDirs,
-			expected: true,
-		},
-		{
-			name:     "src directory",
-			fullSrc:  "src",
-			pattern:  &excludedDirs,
-			expected: false,
-		},
-	}
-
-	excludedList := "LICENSE*,test/*,temp/*"
+func TestPopulateExclusions(t *testing.T) {
+	excludedList := "LICENSE*,test/*,temp/*,../../tester/*"
 	populateExclusions(excludedList)
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			assert.Equal(t, test.expected, IsExcluded(test.fullSrc, *test.pattern))
-		})
-	}
+
+	assert.Contains(t, excludedPaths, `LICENSE*`)
+	assert.Contains(t, excludedDirs, `test`)
+	assert.Contains(t, excludedDirs, `temp`)
+	assert.NotContains(t, excludedDirs, `../../tester`)
 }

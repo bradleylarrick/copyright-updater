@@ -21,7 +21,7 @@ var (
 	javaHeader    = "/*"
 	javaFooter    = " */"
 	javaPrefix    = " *"
-	javaProtected = []string{}
+	JavaProtected = []string{}
 )
 
 func (JavaHandler) Format(src *os.File, dest *os.File) error {
@@ -30,8 +30,8 @@ func (JavaHandler) Format(src *os.File, dest *os.File) error {
 		return err
 	}
 
-	if len(javaProtected) > 0 {
-		findProtected(javaProtected)
+	if len(JavaProtected) > 0 {
+		findProtected(JavaProtected)
 	}
 	findHeader()
 	writeCopyright()
@@ -42,5 +42,5 @@ func (JavaHandler) Format(src *os.File, dest *os.File) error {
  * Load additional protected patterns.
  */
 func (JavaHandler) AddProtected(protected []string) {
-	addProtected(&javaProtected, protected)
+	addProtected(&JavaProtected, protected)
 }

@@ -21,7 +21,7 @@ var (
 	batHeader    = "REM"
 	batFooter    = "REM"
 	batPrefix    = "REM"
-	batProtected = []string{"@echo"}
+	BatProtected = []string{"@echo"}
 )
 
 func (BatHandler) Format(src *os.File, dest *os.File) error {
@@ -30,8 +30,8 @@ func (BatHandler) Format(src *os.File, dest *os.File) error {
 		return err
 	}
 
-	if len(batProtected) > 0 {
-		findProtected(batProtected)
+	if len(BatProtected) > 0 {
+		findProtected(BatProtected)
 	}
 	findHeader()
 	writeCopyright()
@@ -42,5 +42,5 @@ func (BatHandler) Format(src *os.File, dest *os.File) error {
  * Load additional protected patterns.
  */
 func (BatHandler) AddProtected(protected []string) {
-	addProtected(&batProtected, protected)
+	addProtected(&BatProtected, protected)
 }

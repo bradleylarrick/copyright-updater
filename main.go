@@ -21,12 +21,11 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/bmatcuk/doublestar/v4"
 	handlers "natuna.org/copyright/handlers"
 )
 
 var (
-	version       string = "1.2.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
+	version       string = "1.3.0 (" + runtime.GOOS + " " + runtime.GOARCH + ")"
 	isPreview     bool
 	isVerbose     bool
 	templateFile  string
@@ -149,35 +148,6 @@ func searchDirectory(path string) error {
 	return nil
 }
 
-// Returns true if the path is excluded by the exclusions list.
-func IsExcluded(path string, excludedPatterns []string) bool {
-	for _, pattern := range excludedPatterns {
-		match, _ := doublestar.PathMatch(pattern, path)
-		if match {
-			return true
-		}
-	}
-	return false
-}
-
-// Parses the excluded list argument and populates the excludePatterns slice.
-func populateExclusions(excludedList string) {
-	if len(excludedList) > 0 {
-		for path := range strings.SplitSeq(excludedList, ",") {
-			excluded, err := filepath.Localize(path)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Invalid excluded path: %s\n", path)
-				continue
-			}
-			if strings.HasSuffix(path, `/*`) {
-				excludedDirs = append(excludedDirs, excluded[:len(excluded)-2])
-			} else {
-				excludedPaths = append(excludedPaths, excluded)
-			}
-		}
-	}
-}
-
 /*
  *  Processes the command line arguments and returns a flag
  * indicating success and a exit value to use of not.
@@ -222,6 +192,15 @@ func processCommandLine(cmdLine []string) (int, bool) {
 
 	sources = args[0:]
 	return 0, true // all's good
+}
+
+// Parses the excluded list argument and populates the excludePatterns slice.
+func populateExclusions(excludedList string) {
+	if len(excludedList) > 0 {
+		for path := range strings.SplitSeq(excludedList, ",") {
+			AddExclusion(path)
+		}
+	}
 }
 
 /*

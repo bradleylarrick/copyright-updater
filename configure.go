@@ -16,13 +16,17 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/pelletier/go-toml/v2"
 	handlers "natuna.org/copyright/handlers"
 )
 
 type Configuration struct {
 	Copyright  []string
+	Exclusions []string
 	Extensions []Extension
 }
 
@@ -45,7 +49,7 @@ func loadConfigurationFile() error {
 		return err
 	}
 
-	configPath := home + "/.copyright/config.toml"
+	configPath := filepath.Join(home, ".copyright/config.toml")
 	_, err = os.Stat(configPath)
 	if err != nil && isVerbose {
 		fmt.Fprintf(os.Stdout, "Warning: failed to find global configuration file: %v\n", err)
@@ -59,9 +63,11 @@ func loadConfigurationFile() error {
 	}
 
 	loadExtensions(Config)
+	loadExclusions(Config)
 	return nil
 }
 
+// Reads the global configuration file from the user's home directory and unmarshals it into a Configuration struct.
 func readConfig(filename string) (*Configuration, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
@@ -76,6 +82,7 @@ func readConfig(filename string) (*Configuration, error) {
 	return &config, nil
 }
 
+// Adds extensions from the configuration to the processor handlers and file handler.
 func loadExtensions(config *Configuration) {
 	for _, ext := range config.Extensions {
 		switch ext.Processor {
@@ -97,5 +104,37 @@ func loadExtensions(config *Configuration) {
 		default:
 			fmt.Fprintf(os.Stderr, "Warning: unknown processor for extension %s\n", ext.Extension)
 		}
+	}
+}
+
+// Loads exclusions from the configuration to the excluded paths or directories lists.
+func loadExclusions(config *Configuration) {
+	for _, exclude := range config.Exclusions {
+		AddExclusion(exclude)
+	}
+}
+
+// Returns true if the path is excluded by the exclusions list.
+func IsExcluded(path string, excludedPatterns []string) bool {
+	for _, pattern := range excludedPatterns {
+		match, _ := doublestar.PathMatch(pattern, path)
+		if match {
+			return true
+		}
+	}
+	return false
+}
+
+// Adds an exclusion path to the excluded paths or directories list.
+func AddExclusion(path string) {
+	excluded, err := filepath.Localize(path)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Invalid excluded path: %s\n", path)
+		return
+	}
+	if strings.HasSuffix(path, `/*`) {
+		excludedDirs = append(excludedDirs, excluded[:len(excluded)-2])
+	} else {
+		excludedPaths = append(excludedPaths, excluded)
 	}
 }
