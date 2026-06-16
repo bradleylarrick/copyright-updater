@@ -147,9 +147,10 @@ copyright -e '**/test/**/*,**/dist/**/*' .
 
 ## 🌐 Global Configuration File
 
-The global configuration file is a TOML file that can be used to set default value for the copyright template
-and add custom file extensions to the list of supported files. It is located in the user's home directory under the `.copyright`
-subdirectory and is named `.config.toml`; e.g., `C:/Users/username/.copyright/config.toml`.
+The global configuration file is a TOML file that can be used to set default value for the copyright template,
+add common exclusions, and add custom file extensions to the list of supported files. It is located in the user's
+home directory under the `.copyright` subdirectory and is named `.config.toml`;
+e.g., `C:/Users/username/.copyright/config.toml`.
 
 The format of the file is as follows:
 
@@ -159,6 +160,8 @@ Copyright = [
 '',
 'Licensed under the Apache License v2.0',
 'https://www.apache.org/licenses/LICENSE-2.0']
+
+Exclusions = ['LICENSE*', 'test/**/*']
 
 [[Extensions]]
 Extension = '.hcl'
@@ -210,7 +213,7 @@ comment line.
 
 Files with a `.vm` extension are also a special case. The file name is inspected for "additional" extensions which may determine which file processor to use. For example, file names ending with `.apt.vm` extension are processed using the `apt` file processor. Files with a `.vm` extension alone or with the extension `txt.vm` are processed using the `vm` file processor.
 
-## <span style="color:red;">&#10140;</span> Updating with Pre-commit Hook
+## &#10140; Updating with Pre-commit Hook
 
 To use the program with a pre-commit hook, create a global hooks path in your home directory, copy the included
 pre-commit hook script to the hooks path, and set the global hooks path in your Git configuration:
@@ -224,6 +227,10 @@ The pre-commit script assumes the copyright program is installed in `~/go/bin`.
 If, during a commit, some of the staged files require a copyright update, the pre-commit hook will automatically run and update the files as needed. If updates are made, the updated files will need to be re-staged and the commit re-run.
 
 ## 📋 Version Notes
+
+### Version 1.3.0 &mdash; 2026-06-17
+
+- Added ability to define global exclusions in the configuration file.
 
 ### Version 1.2.0 &mdash; 2026-06-16
 
