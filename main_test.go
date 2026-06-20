@@ -15,8 +15,10 @@ package main
 
 import (
 	"os"
+	"strings"
 	"testing"
 
+	"github.com/zenizh/go-capturer"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +30,13 @@ func TestMain(m *testing.M) {
 
 func TestPopulateExclusions(t *testing.T) {
 	excludedList := "LICENSE*,test/*,temp/*,../../tester/*"
-	populateExclusions(excludedList)
+
+	output := capturer.CaptureOutput(func() {
+		populateExclusions(excludedList)
+	})
+
+	lines := strings.Split(output, "\n")
+	assert.True(t, strings.HasPrefix(lines[0], "Invalid excluded path"))
 
 	assert.Contains(t, excludedPaths, `LICENSE*`)
 	assert.Contains(t, excludedDirs, `test`)

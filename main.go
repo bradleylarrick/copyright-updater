@@ -154,7 +154,9 @@ func searchDirectory(path string) error {
  */
 func processCommandLine(cmdLine []string) (int, bool) {
 	flag.NewFlagSet("copyright", flag.ExitOnError)
+	flag.CommandLine.SetOutput(os.Stdout)
 	flag.Usage = Usage
+
 	destArg := flag.String("d", "", "destination `directory` (defaults to source)")
 	excludedList := flag.String("e", "", "a list of directory `patterns` to exclude")
 	helpFlag := flag.Bool("h", false, "print this message and exit")

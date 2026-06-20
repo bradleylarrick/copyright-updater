@@ -15,9 +15,11 @@ package main
 
 import (
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/zenizh/go-capturer"
 	handlers "natuna.org/copyright/handlers"
 )
 
@@ -33,7 +35,13 @@ func TestLoadExtensions(t *testing.T) {
 		},
 	}
 
-	loadExtensions(config)
+	output := capturer.CaptureOutput(func() {
+		loadExtensions(config)
+	})
+
+	lines := strings.Split(output, "\n")
+	assert.Equal(t, "Warning: unknown processor for extension .zyx", lines[0])
+
 	assert.Equal(t, handlers.AptHandler{}, processor.Handlers[".abc"])
 	assert.Equal(t, []string{"intro"}, handlers.AptProtected)
 	assert.Equal(t, handlers.JavaHandler{}, processor.Handlers[".xyz"])
