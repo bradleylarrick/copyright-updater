@@ -60,7 +60,7 @@ func startProcess(srcFile *os.File, destFile *os.File, hdr string, ftr string, p
 func findProtected(protectedList []string) {
 	if ndx < len(lines) {
 		for _, protected := range protectedList {
-			if len(lines[ndx]) > 0 && strings.HasPrefix(lines[ndx], protected) {
+			if len(lines[ndx]) > 0 && strings.HasPrefix(strings.ToLower(lines[ndx]), strings.ToLower(protected)) {
 				writeLine(lines[ndx])
 				ndx++
 				break
