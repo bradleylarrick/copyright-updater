@@ -231,6 +231,10 @@ If, during a commit, some of the staged files require a copyright update, the pr
 
 ## 📋 Version Notes
 
+### Version 1.3.1 &mdash; 2026-06-24
+
+- Fixed bug in Updater to ignore case when testing for protected lines.
+
 ### Version 1.3.0 &mdash; 2026-06-16
 
 - Added ability to define global exclusions in the configuration file.
