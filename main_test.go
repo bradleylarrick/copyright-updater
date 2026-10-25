@@ -18,8 +18,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zenizh/go-capturer"
 	"github.com/stretchr/testify/assert"
+	"github.com/zenizh/go-capturer"
 )
 
 func TestMain(m *testing.M) {

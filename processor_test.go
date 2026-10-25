@@ -28,42 +28,42 @@ func TestFindExtension(t *testing.T) {
 	}{
 		{
 			name:     "example.sh",
-			fullSrc:  "test/example.sh",
+			fullSrc:  "testdata/example.sh",
 			expected: ".sh",
 		},
 		{
 			name:     "WithHeader.java",
-			fullSrc:  "test/src/main/WithHeader.java",
+			fullSrc:  "testdata/src/main/WithHeader.java",
 			expected: ".java",
 		},
 		{
 			name:     "example.txt",
-			fullSrc:  "test/example.txt",
+			fullSrc:  "testdata/example.txt",
 			expected: ".txt",
 		},
 		{
 			name:     "Makefile",
-			fullSrc:  "test/Makefile",
+			fullSrc:  "testdata/Makefile",
 			expected: ".mk",
 		},
 		{
 			name:     "Jenkinsfile",
-			fullSrc:  "test/Jenkinsfile",
+			fullSrc:  "testdata/Jenkinsfile",
 			expected: ".java",
 		},
 		{
 			name:     "example.txt.vm",
-			fullSrc:  "test/example.txt.vm",
+			fullSrc:  "testdata/example.txt.vm",
 			expected: ".vm",
 		},
 		{
 			name:     "loader",
-			fullSrc:  "test/loader",
+			fullSrc:  "testdata/loader",
 			expected: ".sh",
 		},
 		{
 			name:     "index.apt.vm",
-			fullSrc:  "test/src/site/apt/index.apt.vm",
+			fullSrc:  "testdata/src/site/apt/index.apt.vm",
 			expected: ".apt",
 		},
 	}

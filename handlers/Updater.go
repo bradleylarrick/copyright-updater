@@ -163,10 +163,7 @@ func writeLine(line string) {
  * Load additional protected patterns.
  */
 func addProtected(protected *[]string, new []string) {
-	for _, pro := range new {
-		*protected = append(*protected, pro)
-	}
-	// fmt.Printf("New Protected: %s\n", *protected)
+	*protected = append(*protected, new...)
 }
 
 /*
